@@ -22,7 +22,7 @@ const getMainChannel = () =>
 let autoShutdown
 
 function setAutoShutdown() {
-  autoShutdown = setInterval(async () => {
+  autoShutdown = setTimeout(async () => {
     await getMainChannel().send('Automatically stopping the server due to inactivity (5 minutes empty)...')
     await serverManager.stopServer()
     await getMainChannel().send('Server stopped')
