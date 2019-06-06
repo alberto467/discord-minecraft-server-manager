@@ -21,6 +21,15 @@ const getMainChannel = () =>
 
 let autoShutdown
 
+function setAutoShutdown() {
+  autoShutdown = setInterval(async () => {
+    await getMainChannel().send('Automatically stopping the server due to inactivity (5 minutes empty)...')
+    await serverManager.stopServer()
+    await getMainChannel().send('Server stopped')
+    await updateActivity()
+  }, 5 * 60 * 1000)
+}
+
 serverManager.on('playerJoined', async name => {
   clearInterval(autoShutdown)
 
@@ -29,13 +38,7 @@ serverManager.on('playerJoined', async name => {
 })
 
 serverManager.on('playerLeft', async name => {
-  if (await getOnlinePlayersNumber() === 0)
-    autoShutdown = setInterval(async () => {
-      await getMainChannel().send('Automatically stopping the server due to inactivity (5 minutes empty)...')
-      await serverManager.stopServer()
-      await getMainChannel().send('Server stopped')
-      await updateActivity()
-    }, 5 * 60 * 1000)
+  if (await getOnlinePlayersNumber() === 0) setAutoShutdown()
 
   await client.channels.get(process.env.TEXT_CHANNEL_ID)
     .send(`**${name}** left the game`)
@@ -50,6 +53,7 @@ client.on('message', async message => {
     case 'start':
       await message.reply('Starting the server...')
       await serverManager.launchServer()
+      setAutoShutdown()
       await message.reply(`Server started @ ${await getIp()}:${process.env.MINECRAFT_SERVER_PORT}`)
       await updateActivity()
       break
