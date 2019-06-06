@@ -16,24 +16,24 @@ async function updateActivity() {
     await client.user.setActivity(null)
 }
 
+const getMainChannel = () =>
+  client.channels.get(process.env.TEXT_CHANNEL_ID)
+
 let autoShutdown
 
 serverManager.on('playerJoined', async name => {
   clearInterval(autoShutdown)
 
-  await client.channels.get(process.env.TEXT_CHANNEL_ID)
-    .send(`**${name}** joined the game`)
+  await getMainChannel().send(`**${name}** joined the game`)
   await updateActivity()
 })
 
 serverManager.on('playerLeft', async name => {
   if (await getOnlinePlayersNumber() === 0)
     autoShutdown = setInterval(async () => {
-      await client.channels.get(process.env.TEXT_CHANNEL_ID)
-        .send('Automatically stopping the server due to inactivity (5 minutes empty)...')
+      await getMainChannel().send('Automatically stopping the server due to inactivity (5 minutes empty)...')
       await serverManager.stopServer()
-      await client.channels.get(process.env.TEXT_CHANNEL_ID)
-        .send('Server stopped')
+      await getMainChannel().send('Server stopped')
       await updateActivity()
     }, 5 * 60 * 1000)
 
