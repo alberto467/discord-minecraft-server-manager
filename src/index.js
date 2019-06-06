@@ -19,11 +19,13 @@ async function updateActivity() {
 serverManager.on('playerJoined', async name => {
   await client.channels.get(process.env.TEXT_CHANNEL_ID)
     .send(`**${name}** joined the game`)
+  await updateActivity()
 })
 
 serverManager.on('playerLeft', async name => {
   await client.channels.get(process.env.TEXT_CHANNEL_ID)
     .send(`**${name}** left the game`)
+  await updateActivity()
 })
 
 client.on('message', async message => {
@@ -50,11 +52,6 @@ client.on('message', async message => {
 
 client.on('ready', async () => {
   console.log('Discord bot ready')
-
-  updateActivity()
-  setInterval(() => {
-    updateActivity()
-  }, 30 * 1000)
 })
 
 client.login(process.env.DISCORD_BOT_TOKEN)
