@@ -116,4 +116,5 @@ $RECYCLE.BIN/
 # End of https://www.gitignore.io/api/node,windows
 
 # Custom
+build/
 ecosystem.config.js
