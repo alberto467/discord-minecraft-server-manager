@@ -124,7 +124,8 @@
         "tabWidth": 2,
         "ignoreTemplateLiterals": true,
         "ignoreUrls": true,
-        "ignoreStrings": true
+        "ignoreStrings": true,
+        "ignoreRegExpLiterals": true
       }
     ],
     "no-unused-expressions": 2,
