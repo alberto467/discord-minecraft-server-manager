@@ -1,4 +1,5 @@
 import { spawn } from 'child_process'
+import EventEmitter from 'events'
 
 export const ServerStatus = {
   NOT_RUNNING: 'NOT_RUNNING',
@@ -7,7 +8,7 @@ export const ServerStatus = {
   STOPPING: 'STOPPING'
 }
 
-export default class ServerManager {
+export default class ServerManager extends EventEmitter {
   status = ServerStatus.NOT_RUNNING
 
   launchServer() {
@@ -20,11 +21,25 @@ export default class ServerManager {
       this.server = spawn('cmd.exe', [ '/c', 'C:\\Users\\alberto467\\Desktop\\minecraft-server\\start.cmd' ])
 
       this.server.stdout.on('data', data => {
-        if (!data.toString('utf8').match(/\[Server thread\/INFO\]: Done \(.+?\)!/)) return
-        this.server.stdout.removeAllListeners('data')
-        this.status = ServerStatus.RUNNING
-        console.log('Server Launched')
-        fulfil()
+        data = data.toString('utf8')
+
+        if (data.match(/\[Server thread\/INFO\]: Done \(.+?\)!/)) {
+          this.status = ServerStatus.RUNNING
+          console.log('Server Launched')
+          return fulfil()
+        }
+
+        const joined = data.match(/\[Server thread\/INFO\]: (.+?) joined the game/)
+        if (joined) {
+          this.emit('playerJoined', joined[1])
+          return console.log(`Player joined: ${joined[1]}`)
+        }
+
+        const left = data.match(/\[Server thread\/INFO\]: (.+?) left the game/)
+        if (left) {
+          this.emit('playerLeft', left[1])
+          return console.log(`Player left: ${left[1]}`)
+        }
       })
 
       this.server.on('exit', code => {

@@ -16,6 +16,16 @@ async function updateActivity() {
     await client.user.setActivity(null)
 }
 
+serverManager.on('playerJoined', async name => {
+  await client.channels.get(process.env.TEXT_CHANNEL_ID)
+    .send(`**${name}** joined the game`)
+})
+
+serverManager.on('playerLeft', async name => {
+  await client.channels.get(process.env.TEXT_CHANNEL_ID)
+    .send(`**${name}** left the game`)
+})
+
 client.on('message', async message => {
   if (message.channel.id !== process.env.TEXT_CHANNEL_ID) return
   if (!message.content.startsWith('/')) return
