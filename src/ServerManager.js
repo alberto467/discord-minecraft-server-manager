@@ -18,7 +18,7 @@ export default class ServerManager extends EventEmitter {
       this.status = ServerStatus.STARTING
       console.log('Launching server')
 
-      this.server = spawn('cmd.exe', [ '/c', 'C:\\Users\\alberto467\\Desktop\\minecraft-server\\start.cmd' ])
+      this.server = spawn('cmd.exe', [ '/c', process.env.MINECRAFT_SERVER_STARTUP_SCRIPT_PATH ])
 
       this.server.stdout.on('data', data => {
         data = data.toString('utf8')
