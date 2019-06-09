@@ -118,3 +118,4 @@ $RECYCLE.BIN/
 # Custom
 build/
 ecosystem.config.js
+config.json

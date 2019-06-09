@@ -4,10 +4,13 @@ import { Client } from 'discord.js'
 import { getOnlinePlayersNumber } from './getServerInfo'
 import getIp from './getIp'
 import ServerManager, { ServerStatus } from './ServerManager'
+import ConfigManager from './ConfigManager'
 
 const client = new Client()
 
 const serverManager = new ServerManager()
+
+const configManager = new ConfigManager()
 
 async function updateActivity() {
   if (serverManager.status === ServerStatus.RUNNING) {
@@ -24,12 +27,14 @@ const sendMessage = (...args) => client.channels
 let autoShutdown
 
 function setAutoShutdown() {
+  const autoShutdownTime = configManager.get('autoShutdownTime', 5 * 60 * 1000)
+  if (autoShutdown <= 0) return
   autoShutdown = setTimeout(async () => {
-    await sendMessage('Automatically stopping the server due to inactivity (5 minutes empty)...')
+    await sendMessage('Automatically stopping the server due to inactivity...')
     await serverManager.stopServer()
     await sendMessage('Server stopped')
     await updateActivity()
-  }, 5 * 60 * 1000)
+  }, autoShutdownTime)
 }
 
 serverManager.on('playerJoined', async name => {
@@ -50,8 +55,11 @@ serverManager.on('playerLeft', async name => {
 client.on('message', async message => {
   if (message.channel.id !== process.env.TEXT_CHANNEL_ID) return
   if (!message.content.startsWith('/')) return
-  const command = message.content.substr(1).trim()
-  switch (command) {
+  const command = message.content
+    .substr(1)
+    .split(' ')
+    .filter(str => str.length !== 0)
+  switch (command[0]) {
     case 'start':
       await message.reply('Starting the server...')
       await serverManager.launchServer()
@@ -66,7 +74,21 @@ client.on('message', async message => {
       await message.reply('Server stopped')
       await updateActivity()
       break
+    case 'set':
+      switch (command[1]) {
+        case 'autoShutdownTime': {
+          const time = parseInt(command[2], 10)
+          if (isNaN(time)) await message.reply('Invalid time')
+          else await configManager.set('autoShutdownTime', time)
+          break
+        }
+        default:
+          await message.reply('Invalid command')
+          break
+      }
+      break
     default:
+      await message.reply('Invalid command')
       break
   }
 })
