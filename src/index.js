@@ -58,6 +58,7 @@ client.on('message', async message => {
       await updateActivity()
       break
     case 'stop':
+      clearInterval(autoShutdown)
       await message.reply('Stopping the server...')
       await serverManager.stopServer()
       await message.reply('Server stopped')
