@@ -4,15 +4,16 @@
   "main": "src/index.js",
   "license": "MIT",
   "scripts": {
-    "start": "set PRODUCTION=true && dotenv -- node build",
-    "dev:watch": "nodemon src --exec \"dotenv -- babel-node\"",
-    "dev": "dotenv -- babel-node src",
+    "start": "set PRODUCTION=true && node build",
+    "dev:watch": "nodemon src --exec babel-node",
+    "dev": "babel-node src",
     "build:clean": "rmdir build /S /Q && mkdir build",
     "build:compile": "babel -d ./build ./src",
     "build": "npm run build:clean && npm run build:compile"
   },
   "dependencies": {
     "discord.js": "^11.5.1",
+    "dotenv": "^8.0.0",
     "mc-ping-updated": "^0.1.0"
   },
   "devDependencies": {
