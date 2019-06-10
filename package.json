@@ -1,5 +1,5 @@
 {
-  "name": "minecraft-server-discord-bot",
+  "name": "discord-minecraft-server-manager",
   "version": "1.0.0",
   "main": "src/index.js",
   "license": "MIT",
