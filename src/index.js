@@ -28,7 +28,7 @@ let autoShutdown
 
 function setAutoShutdown() {
   const autoShutdownTime = configManager.get('autoShutdownTime', 5 * 60 * 1000)
-  if (autoShutdown <= 0) return
+  if (autoShutdownTime <= 0) return
   autoShutdown = setTimeout(async () => {
     await sendMessage('Automatically stopping the server due to inactivity...')
     await serverManager.stopServer()
