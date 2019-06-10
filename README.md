@@ -1,4 +1,3 @@
-# discord-minecraft-server-manager
 discord-minecraft-server-manager allows you to remotly start and stop your minecraft server from discord. It also displays the server status and other information and stops the server automatically if it’s been empty for a configurable amount of time.
 
 # Install
@@ -20,3 +19,18 @@ But it is raccomended to use a tool like [pm2](https://www.npmjs.com/package/pm2
 
     pm2 start
 
+# Bot commands
+
+##  Start command
+
+    /start
+
+## Stop command
+
+    /stop
+
+## Set the auto shutdown time
+
+    /config autoShutdownTime <ms>
+
+If zero or a negative number is provided, the auto shutdown is disabled.
