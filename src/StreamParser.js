@@ -11,11 +11,12 @@ export default class StreamParser extends Writable {
     if (Buffer.isBuffer(data))
       data = data.toString('utf8')
 
-    console.log(data)
-
     for (const [ key, regex ] of this.regexs) {
       const match = data.match(regex)
-      if (match) return this.emit(key, match)
+      if (match) {
+        this.emit(key, match)
+        break
+      }
     }
     next()
   }
