@@ -8,7 +8,7 @@
     "dev:watch": "nodemon src --exec babel-node",
     "dev": "babel-node src",
     "build:clean": "rmdir build /S /Q && mkdir build",
-    "build:compile": "babel -d ./build ./src",
+    "build:compile": "npx babel -d ./build ./src",
     "build": "npm run build:clean && npm run build:compile"
   },
   "dependencies": {
@@ -17,6 +17,7 @@
     "mc-ping-updated": "^0.1.0"
   },
   "devDependencies": {
+    "@babel/cli": "^7.12.10",
     "@babel/core": "^7.4.5",
     "@babel/plugin-proposal-class-properties": "^7.4.4",
     "@babel/preset-env": "^7.4.5"
